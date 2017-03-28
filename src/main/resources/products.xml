@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<products>
+    <category name="video-technics">
+        <subcategory name="tv">
+            <item>
+                <producer>Vizio</producer>
+                <model>EW321</model>
+                <date-of-issue>28-05-2011</date-of-issue>
+                <color>black</color>
+                <not-in-stock/>
+            </item>
+        </subcategory>
+        <subcategory name="car-video">
+            <item>
+                <producer>Crown</producer>
+                <model>QZ234</model>
+                <date-of-issue>12-06-2011</date-of-issue>
+                <color>white</color>
+                <price>105.2</price>
+            </item>
+        </subcategory>
+    </category>
+    <category name="computers">
+        <subcategory name="netbooks">
+            <item>
+                <producer>ASUS</producer>
+                <model>er567</model>
+                <date-of-issue>17-05-2010</date-of-issue>
+                <color>green</color>
+                <not-in-stock/>
+            </item>
+            <item>
+                <producer>Apple</producer>
+                <model>df432</model>
+                <date-of-issue>29-05-2011</date-of-issue>
+                <color>white</color>
+                <price>2100</price>
+            </item>
+            <item>
+                <producer>Samsung</producer>
+                <model>dp432</model>
+                <date-of-issue>30-05-2011</date-of-issue>
+                <color>white</color>
+                <price>1100</price>
+            </item>
+        </subcategory>
+    </category>
+    <category name="motors">
+        <subcategory name="boats">
+            <item>
+                <producer>Crownline</producer>
+                <model>BR180</model>
+                <date-of-issue>30-05-2011</date-of-issue>
+                <color>white</color>
+                <price>9600</price>
+            </item>
+        </subcategory>
+    </category>
+</products>
