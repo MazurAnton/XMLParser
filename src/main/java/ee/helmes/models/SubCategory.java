@@ -18,7 +18,7 @@ public class SubCategory implements ParseConstants {
 
     @Override
     public String toString() {
-        return "\n" + "SubCategory{" +
+        return "\n" + "  SubCategory{" +
                 "name='" + name + '\'' +
                 "," + "items=" + items +
                 '}';

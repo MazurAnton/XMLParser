@@ -2,6 +2,7 @@ package ee.helmes.parsers;
 
 import ee.helmes.models.Category;
 import ee.helmes.parsetype.Type;
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -12,23 +13,20 @@ import java.util.List;
 
 public class SAXParser implements Type, ParseConstants {
 
+    private static final Logger logger = Logger.getLogger(SAXParser.class);
+
     @Override
     public void parse() {
         SAXParserFactory factory = SAXParserFactory.newInstance();
         javax.xml.parsers.SAXParser saxParser = null;
-        List<Category> categories = new ArrayList<>();
         try {
             saxParser = factory.newSAXParser();
-            SAXHandler handler = new SAXHandler(categories);
+            SAXHandler handler = new SAXHandler();
             saxParser.parse(ClassLoader.getSystemResourceAsStream(PARSE_FILE_NAME), handler);
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
+            System.out.print(handler.getHelper().getCategories());
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            logger.error(e);
         }
-        System.out.print(categories);
     }
 }
 

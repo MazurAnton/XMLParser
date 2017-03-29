@@ -36,7 +36,7 @@ public class Item implements ParseConstants {
 
     @Override
     public String toString() {
-        return "\n" + "  Item{" +
+        return "\n" + "    Item{" +
                 "producer='" + producer + '\'' +
                 ", model='" + model + '\'' +
                 ", issueDate=" + issueDate +

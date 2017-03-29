@@ -1,23 +1,21 @@
 package ee.helmes.parsers;
 
 import ee.helmes.models.Category;
+import ee.helmes.models.HelperParsing;
 import ee.helmes.models.Item;
 import ee.helmes.models.SubCategory;
+import org.apache.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SAXHandler extends DefaultHandler implements ParseConstants {
 
-    private List<Category> categories;
-    private List<SubCategory> subCategories = new ArrayList<>();
-    private List<Item> items = new ArrayList<>();
-    private Item oItem = new Item();
-    private SubCategory oSubCategory = new SubCategory();
-    private Category oCategory = new Category();
+    private static final Logger logger = Logger.getLogger(SAXHandler.class);
+
+    private HelperParsing helper = new HelperParsing();
 
     private boolean category = false;
     private boolean subCategory = false;
@@ -29,19 +27,15 @@ public class SAXHandler extends DefaultHandler implements ParseConstants {
     private boolean itemPrice = false;
     private boolean itemInStock = false;
 
-    public SAXHandler(List<Category> categories) {
-        this.categories = categories;
-    }
-
     public void startElement(String uri, String localName, String elementName, Attributes attributes)
             throws SAXException {
         if (elementName.equalsIgnoreCase(CATEGORY_TAG) && !category) {
-            oCategory.setName(attributes.getValue(CATEGORY_NAME_TAG));
+            helper.getCategory().setName(attributes.getValue(CATEGORY_NAME_TAG));
             category = true;
         }
 
         if (elementName.equalsIgnoreCase(SUBCATEGORY_TAG) && !subCategory) {
-            oSubCategory.setName(attributes.getValue(SUBCATEGORY_NAME_TAG));
+            helper.getSubCategory().setName(attributes.getValue(SUBCATEGORY_NAME_TAG));
             subCategory = true;
         }
 
@@ -79,31 +73,32 @@ public class SAXHandler extends DefaultHandler implements ParseConstants {
 
         if (itemProducer) {
             itemProducer = false;
-            oItem.setProducer(parameter);
+            helper.getItem().setProducer(parameter);
         }
 
         if (itemModel) {
             itemModel = false;
-            oItem.setModel(parameter);
+            helper.getItem().setModel(parameter);
         }
 
         if (itemIssueDate) {
             itemIssueDate = false;
-            oItem.setItemDate(parameter, ITEM_DATE_FORMAT);
+            helper.getItem().setItemDate(parameter, ITEM_DATE_FORMAT);
         }
 
         if (itemColor) {
             itemColor = false;
-            oItem.setColor(parameter);
+            helper.getItem().setColor(parameter);
         }
 
         if (itemPrice) {
             itemPrice = false;
+            helper.getItem().setPriceString(parameter);
         }
 
         if (itemInStock) {
             itemInStock = false;
-            oItem.setInStock(Boolean.parseBoolean(parameter));
+            helper.getItem().setInStock(Boolean.parseBoolean(parameter));
         }
 
     }
@@ -112,24 +107,28 @@ public class SAXHandler extends DefaultHandler implements ParseConstants {
 
         if (elementName.equalsIgnoreCase(SUBCATEGORY_TAG)) {
             subCategory = false;
-            oSubCategory.setItems(items);
-            subCategories.add(oSubCategory);
-            items = new ArrayList<>();
-            oSubCategory = new SubCategory();
+            helper.getSubCategory().setItems(helper.getItems());
+            helper.getSubCategories().add(helper.getSubCategory());
+            helper.setItems(new ArrayList<>());
+            helper.setSubCategory(new SubCategory());
         }
 
-        if (elementName.equalsIgnoreCase(CATEGORY_TAG) ){
+        if (elementName.equalsIgnoreCase(CATEGORY_TAG)) {
             category = false;
-            oCategory.setSubcategories(subCategories);
-            categories.add(oCategory);
-            subCategories = new ArrayList<>();
-            oCategory = new Category();
+            helper.getCategory().setSubcategories(helper.getSubCategories());
+            helper.getCategories().add(helper.getCategory());
+            helper.setSubCategories(new ArrayList<>());
+            helper.setCategory(new Category());
         }
 
         if (elementName.equalsIgnoreCase(ITEM_TAG)) {
             item = false;
-            items.add(oItem);
-            oItem = new Item();
+            helper.getItems().add(helper.getItem());
+            helper.setItem(new Item());
         }
+    }
+
+    public HelperParsing getHelper() {
+        return helper;
     }
 }

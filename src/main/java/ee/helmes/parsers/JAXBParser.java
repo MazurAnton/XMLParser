@@ -2,12 +2,15 @@ package ee.helmes.parsers;
 
 import ee.helmes.models.Product;
 import ee.helmes.parsetype.Type;
+import org.apache.log4j.Logger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 public class JAXBParser implements Type, ParseConstants {
+
+    private static final Logger logger = Logger.getLogger(JAXBParser.class);
 
     @Override
     public void parse() {
@@ -24,7 +27,7 @@ public class JAXBParser implements Type, ParseConstants {
             //marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
            // marshaller.marshal(product, System.out);
         } catch (JAXBException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
         System.out.print(product);
     }

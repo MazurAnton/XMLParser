@@ -19,7 +19,7 @@ public class Category implements ParseConstants {
     public String toString() {
         return "\n" + "Category{" +
                 "name='" + name + '\'' +
-                "," + "\n" + "subcategories=" + subcategories +
+                "," + "\n" + " subcategories=" + subcategories +
                 '}' + "\n";
     }
 

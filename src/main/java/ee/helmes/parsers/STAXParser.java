@@ -1,9 +1,11 @@
 package ee.helmes.parsers;
 
 import ee.helmes.models.Category;
+import ee.helmes.models.HelperParsing;
 import ee.helmes.models.Item;
 import ee.helmes.models.SubCategory;
 import ee.helmes.parsetype.Type;
+import org.apache.log4j.Logger;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
@@ -14,19 +16,14 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import java.util.ArrayList;
-import java.util.List;
 
 public class STAXParser implements Type, ParseConstants {
 
+    private static final Logger logger = Logger.getLogger(STAXParser.class);
+
     private XMLEventReader eventReader;
-
-    List<Category> categories = new ArrayList<>();
-    List<SubCategory> subCategories = new ArrayList<>();
-    List<Item> items = new ArrayList<>();
-
-    Category category = new Category();
-    SubCategory subCategory = new SubCategory();
-    Item item = new Item();
+    private XMLEvent event;
+    private HelperParsing helper = new HelperParsing();
 
     @Override
     public void parse() {
@@ -37,50 +34,46 @@ public class STAXParser implements Type, ParseConstants {
             this.eventReader = eventReader;
 
             while (eventReader.hasNext()) {
-                XMLEvent event = eventReader.nextEvent();
-
+                event = eventReader.nextEvent();
                 checkStartElement();
                 checkEndElement();
             }
-            System.out.print(categories);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
-
+        System.out.print(helper.getCategories());
     }
 
     private void checkStartElement() {
 
         try {
-            XMLEvent event = eventReader.nextEvent();
 
             if (event.isStartElement()) {
                 StartElement startElement = event.asStartElement();
                 String startElementName = startElement.getName().getLocalPart();
                 if (startElementName.equals(CATEGORY_TAG)) {
-                    category = new Category();
+                    helper.setCategory(new Category());
                     Attribute attribute = startElement.getAttributeByName(new QName(CATEGORY_NAME_TAG));
-                    category.setName(attribute.getValue());
+                    helper.getCategory().setName(attribute.getValue());
                 } else if (startElementName.equals(SUBCATEGORY_TAG)) {
-                    subCategory = new SubCategory();
+                    helper.setSubCategory(new SubCategory());
                     event = eventReader.nextEvent();
                     Attribute attribute = startElement.getAttributeByName(new QName(SUBCATEGORY_NAME_TAG));
-                    subCategory.setName(attribute.getValue());
+                    helper.getSubCategory().setName(attribute.getValue());
                 } else if (startElementName.equals(ITEM_TAG)) {
-                    item = new Item();
+                    helper.setItem(new Item());
                     event = eventReader.nextEvent();
                 } else setItem();
 
             }
         } catch (XMLStreamException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 
     private void setItem() {
 
         try {
-            XMLEvent event = eventReader.nextEvent();
 
             if (event.isStartElement()) {
                 StartElement startElement = event.asStartElement();
@@ -88,53 +81,52 @@ public class STAXParser implements Type, ParseConstants {
 
                 if (startElementName.equals(ITEM_PRODUCER_TAG)) {
                     event = eventReader.nextEvent();
-                    item.setProducer(event.asCharacters().getData());
+                    helper.getItem().setProducer(event.asCharacters().getData());
                 } else if (startElementName.equals(ITEM_MODEL_TAG)) {
                     event = eventReader.nextEvent();
-                    item.setModel(event.asCharacters().getData());
+                    helper.getItem().setModel(event.asCharacters().getData());
                 } else if (startElementName.equals(ITEM_ISSUE_DTAE_TAG)) {
                     event = eventReader.nextEvent();
-                    item.setItemDate(event.asCharacters().getData(), ITEM_DATE_FORMAT);
+                    helper.getItem().setItemDate(event.asCharacters().getData(), ITEM_DATE_FORMAT);
                 } else if (startElementName.equals(ITEM_COLOR_TAG)) {
                     event = eventReader.nextEvent();
-                    item.setColor(event.asCharacters().getData());
+                    helper.getItem().setColor(event.asCharacters().getData());
                 } else if (startElementName.equals(ITEM_PRICE_TAG)) {
                     event = eventReader.nextEvent();
-                    item.setPriceString(event.asCharacters().getData());
+                    helper.getItem().setPriceString(event.asCharacters().getData());
                 }
             }
         } catch (XMLStreamException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 
     private void checkEndElement() {
 
         try {
-            XMLEvent event = eventReader.nextEvent();
 
             if (event.isEndElement()) {
                 EndElement endElement = event.asEndElement();
                 String endElementName = endElement.getName().getLocalPart();
                 if (endElementName.equals(CATEGORY_TAG)) {
-                    category.setSubcategories(subCategories);
-                    categories.add(category);
-                    subCategories = new ArrayList<>();
+                    helper.getCategory().setSubcategories(helper.getSubCategories());
+                    helper.getCategories().add(helper.getCategory());
+                    helper.setSubCategories(new ArrayList<>());
                 } else if (endElementName.equals(SUBCATEGORY_TAG)) {
-                    subCategory.setItems(items);
-                    subCategories.add(subCategory);
-                    items = new ArrayList<>();
+                    helper.getSubCategory().setItems(helper.getItems());
+                    helper.getSubCategories().add(helper.getSubCategory());
+                    helper.setItems(new ArrayList<>());
                 } else if (endElementName.equals(ITEM_TAG)) {
-                    items.add(item);
+                    helper.getItems().add(helper.getItem());
                 } else if (endElementName.equals(ITEM_IN_STOCK_TAG)) {
                     event = eventReader.nextEvent();
                     String inStockString = event.asCharacters().getData();
                     Boolean inStock = Boolean.parseBoolean(inStockString);
-                    item.setInStock(inStock);
+                    helper.getItem().setInStock(inStock);
                 }
             }
         } catch (XMLStreamException e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 }
