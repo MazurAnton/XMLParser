@@ -1,7 +1,6 @@
 package ee.helmes.models;
 
 import ee.helmes.parsers.DateAdapter;
-import ee.helmes.parsers.ParseConstants;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -11,8 +10,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static ee.helmes.parsers.ParserConstantes.*;
+
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Item implements ParseConstants {
+public class Item {
 
     @XmlElement(name = ITEM_PRODUCER_TAG)
     private String producer;
@@ -65,11 +66,11 @@ public class Item implements ParseConstants {
         return inStock;
     }
 
-    public void setInStock(boolean inStock) {
+    public void setInStock() {
         if (price < 0.00001) {
             this.inStock = true;
         } else {
-            this.inStock = inStock;
+            this.inStock = false;
         }
     }
 
@@ -111,5 +112,6 @@ public class Item implements ParseConstants {
 
     public void setPrice(double price) {
         this.price = price;
+        setInStock();
     }
 }

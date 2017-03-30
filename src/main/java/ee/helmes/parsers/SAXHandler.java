@@ -11,7 +11,9 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.ArrayList;
 
-public class SAXHandler extends DefaultHandler implements ParseConstants {
+import static ee.helmes.parsers.ParserConstantes.*;
+
+public class SAXHandler extends DefaultHandler {
 
     private static final Logger logger = Logger.getLogger(SAXHandler.class);
 
@@ -30,16 +32,24 @@ public class SAXHandler extends DefaultHandler implements ParseConstants {
     public void startElement(String uri, String localName, String elementName, Attributes attributes)
             throws SAXException {
         if (elementName.equalsIgnoreCase(CATEGORY_TAG) && !category) {
+            if (helper.getCategories() == null) {
+                helper.setCategories(new ArrayList<>());
+            }
+            helper.setCategory(new Category());
+            helper.setSubCategories(new ArrayList<>());
             helper.getCategory().setName(attributes.getValue(CATEGORY_NAME_TAG));
             category = true;
         }
 
         if (elementName.equalsIgnoreCase(SUBCATEGORY_TAG) && !subCategory) {
+            helper.setSubCategory(new SubCategory());
+            helper.setItems(new ArrayList<>());
             helper.getSubCategory().setName(attributes.getValue(SUBCATEGORY_NAME_TAG));
             subCategory = true;
         }
 
         if (elementName.equalsIgnoreCase(ITEM_TAG) && !item) {
+            helper.setItem(new Item());
             item = true;
         }
 
@@ -98,7 +108,7 @@ public class SAXHandler extends DefaultHandler implements ParseConstants {
 
         if (itemInStock) {
             itemInStock = false;
-            helper.getItem().setInStock(Boolean.parseBoolean(parameter));
+            helper.getItem().setInStock();
         }
 
     }
@@ -126,6 +136,8 @@ public class SAXHandler extends DefaultHandler implements ParseConstants {
             helper.getItems().add(helper.getItem());
             helper.setItem(new Item());
         }
+
+
     }
 
     public HelperParsing getHelper() {

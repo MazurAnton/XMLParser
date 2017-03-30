@@ -1,13 +1,16 @@
 package ee.helmes.models;
-
-import ee.helmes.parsers.ParseConstants;
-
-import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
 import java.util.List;
 
+import static ee.helmes.parsers.ParserConstantes.ITEM_TAG;
+import static ee.helmes.parsers.ParserConstantes.SUBCATEGORY_NAME_TAG;
+
 @XmlAccessorType(XmlAccessType.FIELD)
-public class SubCategory implements ParseConstants {
+public class SubCategory {
 
     @XmlAttribute(name = SUBCATEGORY_NAME_TAG)
     private String name;

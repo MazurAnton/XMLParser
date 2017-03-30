@@ -1,14 +1,14 @@
 package ee.helmes.parsers;
-
 import ee.helmes.models.Product;
-import ee.helmes.parsetype.Type;
 import org.apache.log4j.Logger;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-public class JAXBParser implements Type, ParseConstants {
+import static ee.helmes.parsers.ParserConstantes.PARSE_FILE_NAME;
+
+public class JAXBParser implements Type {
 
     private static final Logger logger = Logger.getLogger(JAXBParser.class);
 

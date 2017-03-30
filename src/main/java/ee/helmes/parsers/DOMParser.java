@@ -4,7 +4,6 @@ import ee.helmes.models.Category;
 import ee.helmes.models.HelperParsing;
 import ee.helmes.models.Item;
 import ee.helmes.models.SubCategory;
-import ee.helmes.parsetype.Type;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,12 +17,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import static ee.helmes.parsers.ParserConstantes.*;
 
 
-public class DOMParser implements Type, ParseConstants {
+public class DOMParser implements Type {
 
     private static final Logger logger = Logger.getLogger(DOMParser.class);
-    private static final int FIRST_ELEMENT = 0;
     private HelperParsing helper = new HelperParsing();
 
     @Override
@@ -103,23 +102,20 @@ public class DOMParser implements Type, ParseConstants {
 
     private void setItem( Node itemNode) {
         Element element = (Element) itemNode;
-        String producer = element.getElementsByTagName(ITEM_PRODUCER_TAG).item(FIRST_ELEMENT).getTextContent();
-        String model = element.getElementsByTagName(ITEM_MODEL_TAG).item(FIRST_ELEMENT).getTextContent();
-        String issueDate = element.getElementsByTagName(ITEM_ISSUE_DTAE_TAG).item(FIRST_ELEMENT).getTextContent();
-        String color = element.getElementsByTagName(ITEM_COLOR_TAG).item(FIRST_ELEMENT).getTextContent();
+        String producer = element.getElementsByTagName(ITEM_PRODUCER_TAG).item(0).getTextContent();
+        String model = element.getElementsByTagName(ITEM_MODEL_TAG).item(0).getTextContent();
+        String issueDate = element.getElementsByTagName(ITEM_ISSUE_DTAE_TAG).item(0).getTextContent();
+        String color = element.getElementsByTagName(ITEM_COLOR_TAG).item(0).getTextContent();
 
-        if (element.getElementsByTagName(ITEM_PRICE_TAG).item(FIRST_ELEMENT) != null) {
-            String price = element.getElementsByTagName(ITEM_PRICE_TAG).item(FIRST_ELEMENT).getTextContent();
+        if (element.getElementsByTagName(ITEM_PRICE_TAG).item(0) != null) {
+            String price = element.getElementsByTagName(ITEM_PRICE_TAG).item(0).getTextContent();
             helper.getItem().setPriceString(price);
-        }
-        if (element.getElementsByTagName(ITEM_IN_STOCK_TAG).item(FIRST_ELEMENT) != null) {
-            String inStock = element.getElementsByTagName(ITEM_IN_STOCK_TAG).item(FIRST_ELEMENT).getTextContent();
-            helper.getItem().setInStock(Boolean.parseBoolean(inStock));
         }
 
         helper.getItem().setProducer(producer);
         helper.getItem().setModel(model);
         helper.getItem().setItemDate(issueDate, ITEM_DATE_FORMAT);
         helper.getItem().setColor(color);
+        helper.getItem().setInStock();
     }
 }

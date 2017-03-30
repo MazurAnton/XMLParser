@@ -1,11 +1,12 @@
 package ee.helmes;
 
-import ee.helmes.utilities.DialogUtility;
+import ee.helmes.messanger.ConsoleMessenger;
 
 public class MainApplication {
 
     public static void main(String[] args){
 
-        DialogUtility.converse();
+        ConsoleMessenger messenger = new ConsoleMessenger();
+        messenger.print();
     }
 }

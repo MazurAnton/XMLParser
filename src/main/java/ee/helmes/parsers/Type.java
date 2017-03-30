@@ -1,4 +1,4 @@
-package ee.helmes.parsetype;
+package ee.helmes.parsers;
 
 public interface Type {
     void parse();
